@@ -5,9 +5,9 @@ const { readdirSync } = require("fs")
 const moment = require("moment");
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-
+const mongoose = require('mongoose')
 let token = config.token
-
+let mongoDB = config.mongoDB
 client.commands = new Collection()
 
 const rest = new REST({ version: '10' }).setToken(token);
@@ -42,8 +42,13 @@ readdirSync('./src/events').forEach(async file => {
 	} else {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
-})
-
+});
+//database connection
+mongoose.connect(mongoDB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+mongoose.set('strictQuery', false);
 //nodejs-events
 process.on("unhandledRejection", e => { 
    console.log(e)
